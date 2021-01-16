@@ -24,6 +24,7 @@ What it currently supports
 - Configurable Routes
 - Able to receive GET,POST,UPDATE,DELETE requests
 - Able to get "GET" request params and x-www-form-urlencoded "POST" request params 
+- Redirect user
 - Send html files back
 - Comes with simple templating builtin (only supports variables)
 
