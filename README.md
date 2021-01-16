@@ -10,11 +10,11 @@ from httpserver import *
 app=httpServer()
 
 @app.route("/login",methods=['GET','POST'])
-def home(params):
-    return sendFile("htdocs/index.html",name=params['name'])
+def home(request):
+    return sendFile("htdocs/index.html",name=request.params['name'])
 
 @app.route("/",methods=['GET'])
-def root(params):
+def root(request):
     return "<h1>Root</h1>"
 
 app.run()
@@ -23,9 +23,10 @@ app.run()
 What it currently supports
 - Configurable Routes
 - Able to receive GET,POST,UPDATE,DELETE requests
-- Only able to parse GET request params (for now)
+- Able to get "GET" request params and x-www-form-urlencoded "POST" request params 
 - Send html files back
 - Comes with simple templating builtin (only supports variables)
+
 
 
 ### Documentation
@@ -40,8 +41,9 @@ Now you are able to start adding routes. For routes the library uses decorators 
 ```
 # Setting route for /login which accepts both GET and POST requests
 @app.route('/login',methods=["GET","POST"])
-def login(params):
-    # specify function which will get executed. A argument will be passed with the GET params in a dict
+def login(request):
+    # specify function which will get executed. A argument will be passed with an object "requestObj" which contains the property "method" 
+    # which is the request method and "params" which is a dict with the parameters that are passed with either GET or POST
     return "This is the login page!"
 
 ```
@@ -49,14 +51,16 @@ You are also able to send back a file
 ```
 # Creating root route which accepts only GET
 @app.route('/',methods=["GET"])
-def root(params):
+def root(request):
     return sendFile("index.html") # render html file to 
 ```
 The library comes with simple built in templating system. The system allows you to pass variables to html files using "%% varname %%""
 ```
 @app.route('/test',methods=["GET"])
-def test(params):
-    return sendFile("index.html", name=params['name']) # params['name'] = the GET parameter 'name'. This will change all the occurences '%% name %%' to whatever the passed in argument would be. Eg. yourHost:port/test?name=john. This will then change '%%name%%'to John in the index.html file.
+def test(request):
+    return sendFile("index.html", name=request.params['name']) # params['name'] = the GET parameter 'name'. 
+    # This will change all the occurences '%% name %%' to whatever the passed in argument would be. 
+    # Eg. yourHost:port/test?name=john. This will then change '%%name%%'to John in the index.html file.
 ```
 
 

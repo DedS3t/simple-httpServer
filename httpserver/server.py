@@ -1,6 +1,7 @@
 import socket
 from threading import Thread 
 import re 
+from .request import requestObj
 
 def sendFile(path,*args,**kwargs):
     f=open(path)
@@ -39,6 +40,7 @@ class httpServer:
         headers = request.split('\n')
         requestedRoute = headers[0].split()[1]
         method=headers[0].split()[0]
+
         params={}
         if method=='GET':
             paramstr=requestedRoute.split("?")[-1]
@@ -50,13 +52,19 @@ class httpServer:
                 for pair in arrParams:
                     key,value=pair.split("=")
                     params[key]=value
-
+        else:
+            paramstr=headers[-1]
+            arrParams=paramstr.split("&")
+            for pair in arrParams:
+                key,value=pair.split("=")
+                params[key]=value
         print(f"{method} request to {requestedRoute}")
         response='HTTP/1.0 404 NOT FOUND\n\nRoute Not Found'
         if requestedRoute in self.routes.keys():
             if method in self.routes[requestedRoute]["methods"]:
                 try:
-                    response = 'HTTP/1.0 200 OK\n\n' + self.routes[requestedRoute]["function"](params)
+                    req=requestObj(params,method)
+                    response = 'HTTP/1.0 200 OK\n\n' + self.routes[requestedRoute]["function"](req)
                 except FileNotFoundError:
                     response = 'HTTP/1.0 404 NOT FOUND\n\nFile Not Found'
         client_connection.sendall(response.encode())
