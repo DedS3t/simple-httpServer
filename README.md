@@ -47,6 +47,15 @@ def login(request):
     return "This is the login page!"
 
 ```
+You can also redirect the user using redirect().
+```
+@app.route("/",methods=['GET'])
+def root(request):
+    return redirect("/login?name=John") # redirect takes in 1 argument which is the url. 
+    # The url can be on the same server or anywhere on the internet, eg. "http://www.google.com" would also work
+```
+
+
 You are also able to send back a file 
 ```
 # Creating root route which accepts only GET

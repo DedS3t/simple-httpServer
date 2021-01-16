@@ -9,6 +9,6 @@ def home(request):
 
 @app.route("/",methods=['GET'])
 def root(request):
-    return "<h1>Root</h1>"
+    return redirect("/login?name=John")
 
 app.run()

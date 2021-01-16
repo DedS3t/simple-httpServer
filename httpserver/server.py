@@ -10,7 +10,9 @@ def sendFile(path,*args,**kwargs):
         content=re.sub(r"(\%\%\s*{key}\s*\%\%)".format(key=key),value,content)
     return content
 
-
+class redirect:
+    def __init__(self,path):
+        self.path=path
 
 
 class httpServer:
@@ -64,7 +66,11 @@ class httpServer:
             if method in self.routes[requestedRoute]["methods"]:
                 try:
                     req=requestObj(params,method)
-                    response = 'HTTP/1.0 200 OK\n\n' + self.routes[requestedRoute]["function"](req)
+                    content=self.routes[requestedRoute]["function"](req)
+                    if isinstance(content,redirect):
+                        response=f'HTTP/1.0 301 Moved Permanently\nLocation: {content.path}'
+                    else:
+                        response = 'HTTP/1.0 200 OK\n\n' + content
                 except FileNotFoundError:
                     response = 'HTTP/1.0 404 NOT FOUND\n\nFile Not Found'
         client_connection.sendall(response.encode())
