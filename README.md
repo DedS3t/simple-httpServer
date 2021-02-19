@@ -65,6 +65,7 @@ def root(request):
     return sendFile("index.html") # render html file to 
 ```
 The library comes with simple built in templating system. The system allows you to pass variables to html files using "%% varname %%""
+It also allows for if statements in the form "(% if expression %) content (% endif %)" check index.html for example.
 ```
 @app.route('/test',methods=["GET"])
 def test(request):
